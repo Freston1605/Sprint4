@@ -1,7 +1,10 @@
 import json, datetime, os
+from basedatos import *
 
-class BaseDeDatos():
-    pass
+opc_disponible = "1"
+opcion = 0
+usuarios = []
+data = []
 
 class Usuario():
 
