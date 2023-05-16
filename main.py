@@ -135,6 +135,7 @@ class Proveedor(Usuario):
 
         finally:
             self.inventario.update[Producto, unidades_nuevas]
+            pass
 
 
 class Producto():
@@ -220,5 +221,3 @@ class CarroDeCompras():
 
             valor_total += valor_item * unidades
         return valor_total
-    
-
