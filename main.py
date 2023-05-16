@@ -7,6 +7,23 @@ opcion = 0
 usuarios = []
 data = []
 
+def limpiar_pantalla():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+#validar opciones para evitar falsos ingresos
+def validacion(opc_disponible):
+    """
+    Funcion para validar que las opciones digitadas sean correctas
+    """
+    opcion_ingresada = input()
+    while True:
+        if opcion_ingresada in opc_disponible:
+            return opcion_ingresada 
+        else:
+            print("Opcion Ingresada no valida")
+            opcion_ingresada = input()
+
+
 class BaseDatos():
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
@@ -318,3 +335,27 @@ db_completa = BaseDatos("basedatos.json")
 db_cargada = db_completa.cargar_db()
 usuarios = db_cargada[0]
 print(usuarios.nombre)
+
+while True:
+    limpiar_pantalla()
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("**********************************                          Bienvenidos a la tienda Telecompro                   *************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("")
+    usuario = input("Ingrese su nombre de usuario aquí: ")
+    for x in usuarios:
+        nombre = x.nick
+        usuario_actual = Usuario(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
+        if usuario == nombre:      
+            if x.tipo == "Administrador":
+                Administrador.opciones_administrador()
+            elif x.tipo == "Normal":
+                usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                usuario_actual.menu2()
+            elif x.tipo == "Vendedor":
+                usuario_actual = Vendedor(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                usuario_actual.menu3()
