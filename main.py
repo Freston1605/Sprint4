@@ -115,7 +115,8 @@ class Proveedor(Usuario):
         self.inventario = Proveedor.inventario
 
     def añadir_producto(self, Producto, unidades_nuevas):
-        """Añade al inventario del Proveedor las unidades del producto señalado"""
+        """Añade al inventario del Proveedor las unidades del producto señalado.
+        Si es que ya hay unidades del producto en inventario, añade las nuevas unidades al total."""
         try:
             unidades_existentes = self.inventario[Producto]
             unidades_nuevas += unidades_existentes
@@ -126,15 +127,16 @@ class Proveedor(Usuario):
             self.inventario.update[Producto, unidades_nuevas]
     
     def descontar_productos(self, Producto, unidades_sustraidas):
-        """Descuenta el número de unidades entregadas como argumento del inventario del Proveedor."""
+        """Descuenta el número de unidades entregadas como argumento del inventario del Proveedor.
+        Si es que ya hay unidades para el producto, descuenta las unidades a las existentes."""
         try:
             unidades_existentes = self.inventario[Producto]
-            unidades_existentes -= unidades_sustraidas
+            unidades_balance = unidades_existentes - unidades_sustraidas
         except KeyError:
-            pass
+            unidades_balance = unidades_sustraidas
 
         finally:
-            self.inventario.update[Producto, unidades_nuevas]
+            self.inventario.update[Producto, unidades_balance]
             pass
 
 
