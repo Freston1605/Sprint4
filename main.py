@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import json, datetime, os
-from basedatos import *
-=======
 import json
 import datetime
 import os
+from basedatos import *
 
->>>>>>> bc42ca87a092fffae19f0410c434bf4b839a53fb
 
 opc_disponible = "1"
 opcion = 0
