@@ -212,3 +212,9 @@ class CarroDeCompras():
 
             valor_total += valor_item * unidades
         return valor_total
+    
+
+db_completa = BaseDatos("basedatos.json")
+db_cargada = db_completa.cargar_db()
+usuarios = db_cargada[0]
+print(usuarios.correo)
