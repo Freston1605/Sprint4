@@ -230,49 +230,6 @@ class Producto():
             print(
                 "Parece que hay un problema con el impuesto. Por favor revisar que no sea igual a cero.")
 
-    """Clase para todos los productos de la tienda. Otorga el SKU automáticamente.
-    El descuento y el impuesto viene en el formato donde 1 = 100%, es decir, el valor neto sin cambios."""
-
-    impuesto = 1.19
-    descuento = 1
-    sku = 1
-
-    def __init__(self, nombre: str, categoria: str, stock: int, valor_neto: int,):
-        self.nombre = nombre
-        self.categoria = categoria
-        self.proveedor = Proveedor
-        self.stock = stock
-        self.valor_neto = valor_neto
-        self.descuento = Producto.descuento
-        self.sku = Producto.sku
-        Producto.sku += 1
-
-    # Métodos para los descuentos
-
-    def aplicar_descuento(self):
-        """Devuelve el valor neto del producto con el descuento ingresado en la instancia."""
-        precio_descuento = self.valor_neto * self.descuento
-        return precio_descuento
-
-    def actualizar_descuento(self, nuevo_descuento):
-        """Actualiza el descuento que puede aplicar sobre el producto. El descuento es un factor que se multiplica por el valor neto.
-        Por ejemplo, un 10% de descuento equivale a valor_neto * 0.9."""
-        self.descuento = nuevo_descuento
-
-    def valor_bruto(self):
-        """Devuelve el valor bruto del objeto sin el IVA aplicado al valor neto."""
-        valor_bruto = self.valor_neto / self.impuesto
-        return valor_bruto
-
-    def valor_impuesto(self):
-        """Devuelve el detalle del impuesto."""
-        try:
-            valor_impuesto = self.valor_neto / self.impuesto
-            return valor_impuesto
-        except ZeroDivisionError:
-            print(
-                "Parece que hay un problema con el impuesto. Por favor revisar que no sea igual a cero.")
-
 
 class CarroDeCompras():
 
@@ -293,13 +250,6 @@ class CarroDeCompras():
         """Añade al carro de compras el producto ingresado."""
         self.contenido.update({Producto, unidades})
 
-    def eliminar_producto(self, Producto):
-        """ Elimina del carro el producto ingresado."""
-        del self.contenido[Producto]
-
-    def vaciar_carro(self):
-        """Vacía todos los productos del carro."""
-        self.contenido.clear()
     def eliminar_producto(self, Producto):
         """ Elimina del carro el producto ingresado."""
         del self.contenido[Producto]
@@ -349,13 +299,10 @@ while True:
     usuario = input("Ingrese su nombre de usuario aquí: ")
     for x in usuarios:
         nombre = x.nick
-        usuario_actual = Usuario(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
-        if usuario == nombre:      
-            if x.tipo == "Administrador":
-                Administrador.opciones_administrador()
-            elif x.tipo == "Normal":
-                usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
-                usuario_actual.menu2()
-            elif x.tipo == "Vendedor":
-                usuario_actual = Vendedor(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
-                usuario_actual.menu3()
+        usuario_actual = Usuario(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+        if x.tipo == "Normal":
+            usuario_actual = Cliente(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+            usuario_actual.menu2()
+        elif x.tipo == "Vendedor":
+            usuario_actual = Vendedor(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+            usuario_actual.menu3()
