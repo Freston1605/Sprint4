@@ -49,36 +49,137 @@ class Usuario():
 
 class Cliente(Usuario):
 
-    """Clase para los clientes de la plataforma."""
+    """Clase para los clientes de la plataforma. Añade el saldo del cliente.
+    Todos los clientes parten con un saldo de 0 pesos"""
+    saldo = 0
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo):
+        super().__init__(id_usuario, clave, nombre, tipo, telefono, edad, correo)
+        self.saldo = Cliente.saldo
+
+    # Métodos para el saldo:
+
+    def agregar_saldo(self, monto_agregado):
+        """Agrega el monto ingresado en el parámetro a _saldo"""
+        try:
+            self.__saldo += monto_agregado
+            print(
+                f"Usted agrego {monto_agregado} pesos a su cartera digital. Su nuevo saldo es: {self.__saldo}")
+        except TypeError:
+            print(
+                "Hay un problema con el tipo de dato para el saldo o el monto agregado.")
+
+    def mostrar_saldo(self):
+        print(f"Su saldo actual es: {self.__saldo}")
+
+    def descontar_saldo(self, monto_deducido):
+        """Descuenta el monto ingresado en el parámetro como argumento a la variable _saldo."""
+        self.__saldo -= monto_deducido
+
+    def get_saldo(self):
+        return self.__saldo
+
+    # Métodos para el carro de compras:
+
+    def añadir_carro(self, **productos):
+        """Agrega al carro de compras los productos ingresados como diccionario producto:unidades."""
+        self.carro_compras.update(productos)
+
+    def limpiar_carro(self):
+        """Limpia el carrito de compras del usuario."""
+        self.carro_compras.clear()
+
 
 class Vendedor(Usuario):
+     
+     """Clase para todos los vendedores. Añade comisión y sección del Vendedor."""
 
-    def __init__(self) -> None:
-        super().__init__()
+     comision = 0
+
+     def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo, seccion):
+        super().__init__(id_usuario, clave, nombre, tipo, telefono, edad, correo)
+        self.seccion = seccion
+        self.comision = Vendedor.comision
 
 
 class Proveedor(Usuario):
 
-    def __init__(self) -> None:
-        super().__init__()
+    """Clase para todos los proveedores. Añade tipo de persona (jurídica o natural) y el rut."""
+
+    inventario = {}
+
+    def __init__(self, id_usuario, clave, nombre, tipo, telefono, correo, tipo_persona, rut):
+        super().__init__(id_usuario, clave, nombre, tipo, telefono, correo)
+        self.tipo_persona = tipo_persona
+        self.rut = rut
+        self.inventario = Proveedor.inventario
+
+    def añadir_producto(self, Producto, unidades_nuevas):
+        """Añade al inventario del Proveedor las unidades del producto señalado"""
+        try:
+            unidades_existentes = self.inventario[Producto]
+            unidades_nuevas += unidades_existentes
+        except KeyError:
+            pass
+
+        finally:
+            self.inventario.update[Producto, unidades_nuevas]
+    
+    def descontar_productos(self, Producto, unidades_sustraidas):
+        pass
 
 
 class Producto():
-    pass
+
+    """Clase para todos los productos de la tienda. Otorga el SKU automáticamente.
+    El descuento y el impuesto viene en el formato donde 1 = 100%, es decir, el valor neto sin cambios."""
+
+    impuesto = 1.19
+    descuento = 1
+    sku = 1
+
+    def __init__(self, nombre: str, categoria: str, stock: int, valor_neto: int,):
+        self.nombre = nombre
+        self.categoria = categoria
+        self.proveedor = Proveedor
+        self.stock = stock
+        self.valor_neto = valor_neto
+        self.descuento = Producto.descuento
+        self.sku = Producto.sku
+        Producto.sku += 1
+
+    # Métodos para los descuentos
+
+    def aplicar_descuento(self):
+        """Devuelve el valor neto del producto con el descuento ingresado en la instancia."""
+        precio_descuento = self.valor_neto * self.descuento
+        return precio_descuento
+
+    def actualizar_descuento(self, nuevo_descuento):
+        """Actualiza el descuento que puede aplicar sobre el producto. El descuento es un factor que se multiplica por el valor neto.
+        Por ejemplo, un 10% de descuento equivale a valor_neto * 0.9."""
+        self.descuento = nuevo_descuento
+
+    def valor_bruto(self):
+        """Devuelve el valor bruto del objeto sin el IVA aplicado al valor neto."""
+        valor_bruto = self.valor_neto / self.impuesto
+        return valor_bruto
+
+    def valor_impuesto(self):
+        """Devuelve el detalle del impuesto."""
+        try:
+            valor_impuesto = self.valor_neto / self.impuesto
+            return valor_impuesto
+        except ZeroDivisionError:
+            print(
+                "Parece que hay un problema con el impuesto. Por favor revisar que no sea igual a cero.")
 
 
 class CarroDeCompras():
 
-    """Clase para los carros de compras."""
-
-    valor_total = 0
+    """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
 
     contenido = {}
-
-    # El valor de la ID se asigna automáticamente al iniciar
     id = 0
 
     def __init__(self, Cliente):
@@ -86,19 +187,28 @@ class CarroDeCompras():
         self.id = CarroDeCompras.id
         CarroDeCompras.id += 1
         self.contenido = CarroDeCompras.contenido
-        self.valor_total = CarroDeCompras.valor_total
 
     def añadir_producto(self, Producto, unidades):
+        """Añade al carro de compras el producto ingresado."""
         self.contenido.update({Producto, unidades})
 
-    def vaciar_carro():
-        pass
+    def eliminar_producto(self, Producto):
+        """ Elimina del carro el producto ingresado."""
+        del self.contenido[Producto]
 
-    def calcular_total():
-        pass
+    def vaciar_carro(self):
+        """Vacía todos los productos del carro."""
+        self.contenido.clear()
 
+    def calcular_total(self):
+        """Calcula el total de la compra según los productos y las unidades dentro de éste."""
+        valor_total = 0
+        for item in self.contenido:
+            unidades = self.contenido[item]
+            if item.descuento != 0:
+                valor_item = item.aplicar_descuento()
+            else:
+                valor_item = item.valor_neto
 
-db_completa = BaseDatos("basedatos.json")
-db_cargada = db_completa.cargar_db()
-usuarios = db_cargada[0]
-print(usuarios.nombre)
+            valor_total += valor_item * unidades
+        return valor_total
