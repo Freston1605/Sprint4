@@ -332,5 +332,3 @@ class CarroDeCompras():
 
             valor_total += valor_item * unidades
         return valor_total
-            valor_total += valor_item * unidades
-        return valor_total
