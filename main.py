@@ -5,6 +5,7 @@ import os
 opc_disponible = "1"
 opcion = 0
 usuarios = []
+productos = []
 data = []
 
 def limpiar_pantalla():
@@ -33,17 +34,82 @@ class BaseDatos():
         with open(self.nombre_archivo) as archivo_json:
             data = json.load(archivo_json)
             usuarios = [Usuario(u["id_usuario"], u["clave"], u["nombre"], u["tipo"], u["telefono"], u["edad"], u["correo"]) for u in data["Usuarios"]]
-            return usuarios
+            productos = [Producto(p["sku"], p["nombre"], p["categoria"], p["descripcion"], p["valor_neto"], p["descuento"]) for p in data["Productos"]]
+            return usuarios, productos
 
-    def guardar_db(self, usuarios, productos, bodegas, ventas):
-        data = {"Usuarios": []}
+    def guardar_db(self, usuarios, productos):
+        data = {"Usuarios": [], "Productos": []}
         for u in usuarios:
             data["Usuarios"].append({"id_usuario": u.id_usuario, "clave": u.clave, "nombre": u.nombre, "tipo": u.tipo, "telefono": u.telefono, "edad": u.edad, "correo": u.correo})
+        for p in productos:
+            data["Productos"].append({"sku": p.sku, "nombre": p.nombre, "descripcion": p.descripcion, "categoria": p.categoria, "valor_neto": p.valor_neto, "descuento": p.descuento})
         
         with open(self.nombre_archivo, "w") as archivo_json:
             json.dump(data, archivo_json)
 
-class Usuario():
+class Producto():
+
+    """Clase para todos los productos de la tienda. Otorga el SKU automáticamente.
+    El descuento y el impuesto viene en el formato donde 1 = 100%, es decir, el valor neto sin cambios."""
+
+    impuesto = 1.19
+    descuento = 1
+    sku = 1
+    def __init__(self, sku: int, nombre: str, categoria: str, descripcion: str,  valor_neto: int, descuento):
+        self.sku = sku
+        self.nombre = nombre
+        self.categoria = categoria
+        self.descripcion = descripcion
+        self.proveedor = Proveedor
+        self.valor_neto = valor_neto
+        self.descuento = descuento
+        
+        Producto.sku += 1
+
+    # Métodos para los descuentos
+
+    def aplicar_descuento(self):
+        """Devuelve el valor neto del producto con el descuento ingresado en la instancia."""
+        precio_descuento = self.valor_neto * self.descuento
+        return precio_descuento
+
+    def actualizar_descuento(self, nuevo_descuento):
+        """Actualiza el descuento que puede aplicar sobre el producto. El descuento es un factor que se multiplica por el valor neto.
+        Por ejemplo, un 10% de descuento equivale a valor_neto * 0.9."""
+        self.descuento = nuevo_descuento
+
+    def valor_bruto(self):
+        """Devuelve el valor bruto del objeto sin el IVA aplicado al valor neto."""
+        valor_bruto = self.valor_neto / self.impuesto
+        return valor_bruto
+
+    def valor_impuesto(self):
+        """Devuelve el detalle del impuesto."""
+        try:
+            valor_impuesto = self.valor_neto / self.impuesto
+            return valor_impuesto
+        except ZeroDivisionError:
+            print(
+                "Parece que hay un problema con el impuesto. Por favor revisar que no sea igual a cero.")
+    
+    def listar_ofertas(self):
+        print("Listando todas las ofertas")
+        print("---------------------------------------------------------------------------")
+        print("Codigo Nombre        Descripcion Valor                    Descuentos")
+        for x in productos:
+            if int(x.descuento) > 0:
+                print(f"{x.sku} {x.nombre} {x.descripcion}    {int(x.valor_neto)+(int(x.valor_neto)*0.19)}     Tiene un descuento de:{x.descuento}%")
+        print("---------------------------------------------------------------------------")
+
+    def listar_productos(self):
+        print("Listando todos los productos")
+        print("---------------------------------------------------------------------------")
+        print("Codigo Nombre        Descripcion Valor")
+        for x in productos:
+            print(x.sku, x.nombre, x.descripcion, int(x.valor_neto)+(int(x.valor_neto)*0.19))
+        print("---------------------------------------------------------------------------")
+
+class Usuario(Producto):
 
     """Clase abstracta para todos los usuarios de la plataforma. Posee elementos comunes heredables a clases como Cliente o vendedor."""
 
@@ -164,7 +230,8 @@ class Cliente(Usuario):
                 usuario_actual.listar_productos()
                 opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 3:
-                usuario_actual.admin_cuenta()
+                print("Opcion No desarrollada")
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 4:
                 break 
 
@@ -191,7 +258,8 @@ class Vendedor(Usuario):
             print("1)Realizar Venta 2)Listar Ofertas 3)Listar Productos 4)Cancelar Venta **** 5)Salir ****")
             opcion = int(validacion("12345"))
             if opcion == 1:
-                usuario_actual.vender_producto()
+                print("Opcion No desarrollada")
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 2:
                 usuario_actual.listar_ofertas()
                 opcion = input("Presione cualquier tecla para continuar...")
@@ -199,7 +267,7 @@ class Vendedor(Usuario):
                 usuario_actual.listar_productos()
                 opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 4:
-                print("Cancelar Venta")
+                print("Opcion No desarrollada")
                 opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 5:
                 break
@@ -242,52 +310,6 @@ class Proveedor(Usuario):
             self.inventario.update[Producto, unidades_balance]
 
 
-class Producto():
-
-    """Clase para todos los productos de la tienda. Otorga el SKU automáticamente.
-    El descuento y el impuesto viene en el formato donde 1 = 100%, es decir, el valor neto sin cambios."""
-
-    impuesto = 1.19
-    descuento = 1
-    sku = 1
-
-    def __init__(self, nombre: str, categoria: str, stock: int, valor_neto: int,):
-        self.nombre = nombre
-        self.categoria = categoria
-        self.proveedor = Proveedor
-        self.stock = stock
-        self.valor_neto = valor_neto
-        self.descuento = Producto.descuento
-        self.sku = Producto.sku
-        Producto.sku += 1
-
-    # Métodos para los descuentos
-
-    def aplicar_descuento(self):
-        """Devuelve el valor neto del producto con el descuento ingresado en la instancia."""
-        precio_descuento = self.valor_neto * self.descuento
-        return precio_descuento
-
-    def actualizar_descuento(self, nuevo_descuento):
-        """Actualiza el descuento que puede aplicar sobre el producto. El descuento es un factor que se multiplica por el valor neto.
-        Por ejemplo, un 10% de descuento equivale a valor_neto * 0.9."""
-        self.descuento = nuevo_descuento
-
-    def valor_bruto(self):
-        """Devuelve el valor bruto del objeto sin el IVA aplicado al valor neto."""
-        valor_bruto = self.valor_neto / self.impuesto
-        return valor_bruto
-
-    def valor_impuesto(self):
-        """Devuelve el detalle del impuesto."""
-        try:
-            valor_impuesto = self.valor_neto / self.impuesto
-            return valor_impuesto
-        except ZeroDivisionError:
-            print(
-                "Parece que hay un problema con el impuesto. Por favor revisar que no sea igual a cero.")
-
-
 class CarroDeCompras():
     """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
     contenido = {}
@@ -327,6 +349,8 @@ class CarroDeCompras():
 
 db_completa = BaseDatos("basedatos.json")
 db_cargada = db_completa.cargar_db()
+usuarios = db_cargada[0]
+productos = db_cargada[1]
 
 while True:
 #    limpiar_pantalla()
@@ -339,7 +363,7 @@ while True:
     print("******************************************************************************************************************************************************")
     print("")
     usuario = input("Ingrese su nombre de usuario aquí: ")
-    for x in db_cargada :
+    for x in usuarios :
         nombre = x.nombre
         usuario_actual = Usuario(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
         if usuario == nombre:  
