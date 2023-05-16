@@ -289,9 +289,7 @@ class Producto():
 
 
 class CarroDeCompras():
-
     """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
-
     contenido = {}
     id = 0
 
