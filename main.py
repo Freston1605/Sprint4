@@ -127,6 +127,42 @@ class Usuario(Producto):
 
     def __get_clave(self):
         return self.__clave
+    
+    def listar_usuarios(self, tipo):
+        print("Listando todos los Usuarios")
+        print("---------------------------------------------------------------------------")
+        print("Codigo       Nombre                  Telefono")
+        for x in usuarios:
+            if x.tipo == tipo:
+                print(x.id_usuario,"           ", x.nombre,"                ",         x.telefono)
+        print("---------------------------------------------------------------------------")
+
+
+    #crear un nuevo usuario
+
+    @staticmethod
+    def crear_usuario(usuarios):
+        id = len(usuarios) + 1 if usuarios else 1
+        nick = input("Indique Nombre: ")
+        print("Tipo de Usuario 1)Administrador 2)Normal 3)Vendedor):")
+        opcion = int(validacion("123"))
+        if opcion == 1:
+            tipo = "Administrador"
+        elif opcion == 2:
+            tipo = "Normal"
+        elif opcion == 3:
+            tipo = "Vendedor"
+        clave = input("Ingrese clave: ")
+        telefono = input("Telefono de contacto: ")
+        edad = input("Edad (Solo Numeros): ")
+        correo = input("Ingrese correo: ")
+        nuevo_usuario = Usuario(id, clave, nick, tipo, telefono, edad, correo)
+        print(f"Esta seguro que desea crear al {tipo} con Nombre: {nick} 1)Para Confirmar 2)Salir")
+        opcion = int(validacion("12"))
+        if opcion == 1:
+            usuarios.append(nuevo_usuario)
+            grabar_nuevo = BaseDatos("basedatos.json")
+            grabar_nuevo.guardar_db(usuarios,productos)
 
 
 class Cliente(Usuario):
@@ -221,6 +257,7 @@ class Cliente(Usuario):
             print("******************************************************************************************************************************************************")
             print("******************************************************************************************************************************************************")
             print("1)Listar Ofertas 2)Listar todos los productos 3)Administrar su cuenta 4)Salir: ")
+            print(f"Bienvenido {x.nombre}")
             print("")
             opcion = int(validacion("1234"))
             if opcion == 1:
@@ -254,6 +291,7 @@ class Vendedor(Usuario):
             print("******************************************************************************************************************************************************")
             print("******************************************************************************************************************************************************")
             print("******************************************************************************************************************************************************")
+            print(f"Bienvenido {x.nombre}")
             print("")
             print("1)Realizar Venta 2)Listar Ofertas 3)Listar Productos 4)Cancelar Venta **** 5)Salir ****")
             opcion = int(validacion("12345"))
@@ -270,6 +308,42 @@ class Vendedor(Usuario):
                 print("Opcion No desarrollada")
                 opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 5:
+                break
+
+class Administrador(Vendedor,BaseDatos):
+    def menu_admin(self):
+        limpiar_pantalla()
+        while True:
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("*************************                     Seleccione las siguientes Opciones para administrar:                          **************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print(f"Bienvenido {x.nombre}")
+            print("")
+            print("1)Listar Productos  2)Listar Ofertas 3)Listar Clientes 4) Listar Vendedores 5) Listar Administradores 6)Crear Usuario 7)Salir: ")
+            opcion = int(validacion("1234567"))
+            if opcion == 1:
+                usuario_actual.listar_productos()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 2:
+                usuario_actual.listar_ofertas()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 3:
+                usuario_actual.listar_usuarios("Cliente")
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 4:
+                usuario_actual.listar_usuarios("Vendedor")
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 5:
+                usuario_actual.listar_usuarios("Administrador")
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 6:
+                print("***************** Ingreso de Nuevos Usuarios ******************")
+                Usuario.crear_usuario(usuarios)
+            elif opcion == 7:
                 break
 
 
@@ -362,14 +436,17 @@ while True:
     print("******************************************************************************************************************************************************")
     print("******************************************************************************************************************************************************")
     print("")
-    usuario = input("Ingrese su nombre de usuario aquí: ")
+    usuario = input("Ingrese su Usuario (telefono ej: 933444333): ")
     for x in usuarios :
-        nombre = x.nombre
+        telefono = x.telefono
         usuario_actual = Usuario(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
-        if usuario == nombre:  
+        if usuario == telefono:  
             if x.tipo == "Cliente":
                 usuario_actual = Cliente(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
                 usuario_actual.menu1()
             elif x.tipo == "Vendedor":
                 usuario_actual = Vendedor(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
                 usuario_actual.menu2()
+            elif x.tipo == "Administrador":
+                usuario_actual = Administrador(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+                usuario_actual.menu_admin()

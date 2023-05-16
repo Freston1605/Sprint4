@@ -1,0 +1,18 @@
+{   "Usuarios": 
+    [
+        {"id_usuario": "1", "clave": "123123", "nombre": "Marcelo", "tipo": "Vendedor", "telefono": "939444052", "edad": "38", "correo": "mfuentesoliva@comercioquinta.cl"},
+        {"id_usuario": "2", "clave": "123456", "nombre": "Viviana", "tipo": "Administrador", "telefono": "968686868", "edad": "42", "correo": "vvera@comercioquinta.cl"},
+        {"id_usuario": "3", "clave": "030345", "nombre": "Miguel", "tipo": "Vendedor", "telefono": "98766551", "edad": "47", "correo": "migangg@gmail.com"},
+        {"id_usuario": "4", "clave": "898989", "nombre": "Fernando", "tipo": "Cliente", "telefono": "99441012", "edad": "22", "correo": "fer@comercioquinta.cl"},
+        {"id_usuario": "5", "clave": "121245", "nombre": "Esteban", "tipo": "Cliente", "telefono": "96784521", "edad": "44", "correo": "estebandido@gmail.com"},
+        {"id_usuario": "6", "clave": "131307", "nombre": "Katherine", "tipo": "Vendedor", "telefono": "97682901", "edad": "37", "correo": "katita@yahoo.es"}
+    ],
+    "Productos":
+    [
+        {"sku": "01", "nombre": "Panchito a lo pobre", "descripcion": "default", "categoria": "Panchos", "valor_neto": "2500", "descuento": "0"},
+        {"sku": "02", "nombre": "Panchito catalan", "descripcion": "default", "categoria": "Panchos", "valor_neto": "3000", "descuento": "0"},
+        {"sku": "03", "nombre": "Panchito italiano", "descripcion": "default", "categoria": "Panchos", "valor_neto": "2000", "descuento": "0"},
+        {"sku": "04", "nombre": "Panchito mediterraneo", "descripcion": "default", "categoria": "Panchos", "valor_neto": "5000", "descuento": "20"},
+        {"sku": "05", "nombre": "Panchito americano", "descripcion": "default", "categoria": "Panchos", "valor_neto": "3500", "descuento": "10"}
+    ]
+}
