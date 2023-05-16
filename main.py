@@ -28,7 +28,6 @@ class BaseDatos():
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
         self.tablas = {}
-        self.cargar_db()
 
     def cargar_db(self):
         with open(self.nombre_archivo) as archivo_json:
@@ -50,7 +49,7 @@ class Usuario():
 
     def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo):
         self.id_usuario = id_usuario
-        self.__clave = clave
+        self.clave = clave
         self.nombre = nombre
         self.tipo = tipo
         self.telefono = telefono
@@ -144,18 +143,66 @@ class Cliente(Usuario):
     def limpiar_carro(self):
         """Limpia el carrito de compras del usuario."""
         self.carro_compras.clear()
+    
+    def menu1(self):
+        while True:
+            limpiar_pantalla()
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("*************************                         Seleccione las siguientes Opciones para navegar:                          **************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("1)Listar Ofertas 2)Listar todos los productos 3)Administrar su cuenta 4)Salir: ")
+            print("")
+            opcion = int(validacion("1234"))
+            if opcion == 1:
+                usuario_actual.listar_ofertas()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 2:
+                usuario_actual.listar_productos()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 3:
+                usuario_actual.admin_cuenta()
+            elif opcion == 4:
+                break 
 
 
 class Vendedor(Usuario):
-     
-     """Clase para todos los vendedores. Añade comisión y sección del Vendedor."""
+    comision = 0
 
-     comision = 0
-
-     def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo, seccion):
+    def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo):
         super().__init__(id_usuario, clave, nombre, tipo, telefono, edad, correo)
-        self.seccion = seccion
         self.comision = Vendedor.comision
+
+    
+    def menu2(self):
+        limpiar_pantalla()
+        while True:
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("*************************                          Seleccione las siguientes Opciones para Vender:                          **************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("")
+            print("1)Realizar Venta 2)Listar Ofertas 3)Listar Productos 4)Cancelar Venta **** 5)Salir ****")
+            opcion = int(validacion("12345"))
+            if opcion == 1:
+                usuario_actual.vender_producto()
+            elif opcion == 2:
+                usuario_actual.listar_ofertas()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 3:
+                usuario_actual.listar_productos()
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 4:
+                print("Cancelar Venta")
+                opcion = input("Presione cualquier tecla para continuar...")
+            elif opcion == 5:
+                break
 
 
 class Proveedor(Usuario):
@@ -283,26 +330,25 @@ class CarroDeCompras():
 
 db_completa = BaseDatos("basedatos.json")
 db_cargada = db_completa.cargar_db()
-usuarios = db_cargada[0]
-print(usuarios.nombre)
 
 while True:
-    limpiar_pantalla()
+#    limpiar_pantalla()
     print("******************************************************************************************************************************************************")
     print("******************************************************************************************************************************************************")
     print("******************************************************************************************************************************************************")
-    print("**********************************                          Bienvenidos a la tienda Telecompro                   *************************************")
+    print("**********************************                          Bienvenidos a la tienda TeloVendo                    *************************************")
     print("******************************************************************************************************************************************************")
     print("******************************************************************************************************************************************************")
     print("******************************************************************************************************************************************************")
     print("")
     usuario = input("Ingrese su nombre de usuario aquí: ")
-    for x in usuarios:
-        nombre = x.nick
+    for x in db_cargada :
+        nombre = x.nombre
         usuario_actual = Usuario(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
-        if x.tipo == "Normal":
-            usuario_actual = Cliente(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
-            usuario_actual.menu2()
-        elif x.tipo == "Vendedor":
-            usuario_actual = Vendedor(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
-            usuario_actual.menu3()
+        if usuario == nombre:  
+            if x.tipo == "Cliente":
+                usuario_actual = Cliente(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+                usuario_actual.menu1()
+            elif x.tipo == "Vendedor":
+                usuario_actual = Vendedor(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+                usuario_actual.menu2()
