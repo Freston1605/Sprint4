@@ -109,7 +109,15 @@ class Proveedor(Usuario):
             self.inventario.update[Producto, unidades_nuevas]
     
     def descontar_productos(self, Producto, unidades_sustraidas):
-        pass
+        """Descuenta el número de unidades entregadas como argumento del inventario del Proveedor."""
+        try:
+            unidades_existentes = self.inventario[Producto]
+            unidades_existentes -= unidades_sustraidas
+        except KeyError:
+            pass
+
+        finally:
+            self.inventario.update[Producto, unidades_nuevas]
 
 
 class Producto():
