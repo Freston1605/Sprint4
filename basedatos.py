@@ -1,6 +1,7 @@
 import json
 import datetime
 import os
+from main import *
 
 class BaseDatos:
     def __init__(self, nombre_archivo):
@@ -11,39 +12,13 @@ class BaseDatos:
     def cargar_db(self):
         with open(self.nombre_archivo) as archivo_json:
             data = json.load(archivo_json)
-            usuarios = [Usuario(u["id"], u["nick"], u["tipo"], u["clave"], u["telefono"], u["edad"]) for u in data["Usuarios"]]
+            usuarios = [Usuario(u["id_usuario"], u["clave"], u["nombre"], u["tipo"],  u["telefono"], u["edad"]) for u in data["Usuarios"]]
             return usuarios
 
     def guardar_db(self, usuarios, productos, bodegas, ventas):
-        data = {"Usuarios": [], "Productos": [], "Bodegas": [], "Ventas": []}
+        data = {"Usuarios": []}
         for u in usuarios:
-            data["Usuarios"].append({"id": u.id, "nick": u.nick, "tipo": u.tipo, "clave": u.clave, "telefono": u.telefono, "edad": u.edad})
+            data["Usuarios"].append({"id_usuario": u.id_usuario, "clave": u.clave, "nombre": u.nombre, "tipo": u.tipo, "telefono": u.telefono, "edad": u.edad})
         
         with open(self.nombre_archivo, "w") as archivo_json:
             json.dump(data, archivo_json)
-
-
-import json
-import datetime
-import os
-from basedatos import *
-
-opc_disponible = "1"
-opcion = 0
-usuarios = []
-productos = []
-bodega = []
-ventas = []
-data = []
-
-
-
-
-
-#iniciando las bases de archivo
-db_completa = BaseDatos("main.json")
-db_cargada = db_completa.cargar_db()
-usuarios = db_cargada[0]
-
-for x in usuarios:
-    print(x.nick)
