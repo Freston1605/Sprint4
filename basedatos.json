@@ -1,1 +1,1 @@
-{"Usuarios": [{"id_usuario": "1", "clave": "123123", "nombre": "Marcelo", "tipo": "Administrador",  "telefono": "939444052", "edad": "38", "correo": "mfuentesoliva@comercioquinta.cl"}]}
+{"Usuarios": [{"id_usuario": "1", "clave": "123123", "nombre": "Marcelo", "tipo": "Vendedor",  "telefono": "939444052", "edad": "38", "correo": "mfuentesoliva@comercioquinta.cl"}]}

@@ -7,6 +7,23 @@ opcion = 0
 usuarios = []
 data = []
 
+def limpiar_pantalla():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+#validar opciones para evitar falsos ingresos
+def validacion(opc_disponible):
+    """
+    Funcion para validar que las opciones digitadas sean correctas
+    """
+    opcion_ingresada = input()
+    while True:
+        if opcion_ingresada in opc_disponible:
+            return opcion_ingresada 
+        else:
+            print("Opcion Ingresada no valida")
+            opcion_ingresada = input()
+
+
 class BaseDatos():
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
@@ -49,6 +66,45 @@ class Usuario():
 
 class Cliente(Usuario):
 
+    """Clase para los clientes de la plataforma. Añade el saldo del cliente.
+    Todos los clientes parten con un saldo de 0 pesos"""
+    saldo = 0
+
+    def __init__(self, id_usuario, clave, nombre, tipo, telefono, edad, correo):
+        super().__init__(id_usuario, clave, nombre, tipo, telefono, edad, correo)
+        self.saldo = Cliente.saldo
+
+    # Métodos para el saldo:
+
+    def agregar_saldo(self, monto_agregado):
+        """Agrega el monto ingresado en el parámetro a _saldo"""
+        try:
+            self.__saldo += monto_agregado
+            print(
+                f"Usted agrego {monto_agregado} pesos a su cartera digital. Su nuevo saldo es: {self.__saldo}")
+        except TypeError:
+            print(
+                "Hay un problema con el tipo de dato para el saldo o el monto agregado.")
+
+    def mostrar_saldo(self):
+        print(f"Su saldo actual es: {self.__saldo}")
+
+    def descontar_saldo(self, monto_deducido):
+        """Descuenta el monto ingresado en el parámetro como argumento a la variable _saldo."""
+        self.__saldo -= monto_deducido
+
+    def get_saldo(self):
+        return self.__saldo
+
+    # Métodos para el carro de compras:
+
+    def añadir_carro(self, **productos):
+        """Agrega al carro de compras los productos ingresados como diccionario producto:unidades."""
+        self.carro_compras.update(productos)
+
+    def limpiar_carro(self):
+        """Limpia el carrito de compras del usuario."""
+        self.carro_compras.clear()
     """Clase para los clientes de la plataforma. Añade el saldo del cliente.
     Todos los clientes parten con un saldo de 0 pesos"""
     saldo = 0
@@ -137,7 +193,6 @@ class Proveedor(Usuario):
 
         finally:
             self.inventario.update[Producto, unidades_balance]
-            pass
 
 
 class Producto():
@@ -189,6 +244,7 @@ class Producto():
 class CarroDeCompras():
 
     """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
+    """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
 
     contenido = {}
     id = 0
@@ -200,6 +256,7 @@ class CarroDeCompras():
         self.contenido = CarroDeCompras.contenido
 
     def añadir_producto(self, Producto, unidades):
+        """Añade al carro de compras el producto ingresado."""
         """Añade al carro de compras el producto ingresado."""
         self.contenido.update({Producto, unidades})
 
@@ -220,6 +277,42 @@ class CarroDeCompras():
                 valor_item = item.aplicar_descuento()
             else:
                 valor_item = item.valor_neto
+    def calcular_total(self):
+        """Calcula el total de la compra según los productos y las unidades dentro de éste."""
+        valor_total = 0
+        for item in self.contenido:
+            unidades = self.contenido[item]
+            if item.descuento != 0:
+                valor_item = item.aplicar_descuento()
+            else:
+                valor_item = item.valor_neto
 
             valor_total += valor_item * unidades
         return valor_total
+
+
+db_completa = BaseDatos("basedatos.json")
+db_cargada = db_completa.cargar_db()
+usuarios = db_cargada[0]
+print(usuarios.nombre)
+
+while True:
+    limpiar_pantalla()
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("**********************************                          Bienvenidos a la tienda Telecompro                   *************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("******************************************************************************************************************************************************")
+    print("")
+    usuario = input("Ingrese su nombre de usuario aquí: ")
+    for x in usuarios:
+        nombre = x.nick
+        usuario_actual = Usuario(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+        if x.tipo == "Normal":
+            usuario_actual = Cliente(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+            usuario_actual.menu2()
+        elif x.tipo == "Vendedor":
+            usuario_actual = Vendedor(x.id_usuario, x.clave, x.nombre, x.tipo, x.telefono, x.edad, x.correo)
+            usuario_actual.menu3()
