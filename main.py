@@ -291,7 +291,6 @@ class Producto():
 class CarroDeCompras():
 
     """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
-    """Clase para los carros de compras. El valor de la ID se asigna automáticamente al iniciar"""
 
     contenido = {}
     id = 0
@@ -304,7 +303,6 @@ class CarroDeCompras():
 
     def añadir_producto(self, Producto, unidades):
         """Añade al carro de compras el producto ingresado."""
-        """Añade al carro de compras el producto ingresado."""
         self.contenido.update({Producto, unidades})
 
     def eliminar_producto(self, Producto):
@@ -315,15 +313,6 @@ class CarroDeCompras():
         """Vacía todos los productos del carro."""
         self.contenido.clear()
 
-    def calcular_total(self):
-        """Calcula el total de la compra según los productos y las unidades dentro de éste."""
-        valor_total = 0
-        for item in self.contenido:
-            unidades = self.contenido[item]
-            if item.descuento != 0:
-                valor_item = item.aplicar_descuento()
-            else:
-                valor_item = item.valor_neto
     def calcular_total(self):
         """Calcula el total de la compra según los productos y las unidades dentro de éste."""
         valor_total = 0
